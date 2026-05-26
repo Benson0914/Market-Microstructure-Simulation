@@ -1,57 +1,136 @@
-# Simulation of Adverse Selection in Market Making
-I simulate how liquidity providers interact with informed and uninformed order flow. 
-keywords: (order flow, price formation, liquidity provision, adverse selection , inventory risk)
+# **Market Making & Adverse Selection Simulator**
 
-Market Microstructure Simulation of Market Making and Adverse Selection
+A Python-based market making simulation framework designed to study inventory risk, adverse selection, toxic order flow, and dynamic spread management under stochastic market conditions.
 
-# **📌 Motivation**
+This project explores how market makers balance spread capture against inventory exposure while interacting with informed and uninformed flow in a simplified electronic market environment.
 
-This project simulates a simplified financial market where a market maker interacts with informed (toxic) and uninformed order flow.
+# **Project Motivation**
 
-The goal is to study how spread capture competes with inventory risk and adverse selection.
+Modern electronic market makers continuously provide bid and ask liquidity while managing several competing risks:
 
-# **⚙️ Model Components**
+- Adverse selection from informed traders
+- Inventory accumulation
+- Volatility shocks
+- Toxic order flow persistence
+- Execution uncertainty
 
-**1. Price Process**
+The goal of this project was to build a simplified simulation environment to study how these factors influence quoting behavior and profitability.
 
-- Geometric / arithmetic Brownian motion
+# **🟢Core Features**
 
-**2. Order Flow**
+## **Stochastic Mid-Price Dynamics**
 
-- Poisson arrivals
-- toxic flow (informed traders)
-- persistent flow (retail behavior)
+- Simulated arithmetic price process using Brownian-style random movement
+- Configurable volatility, drift, and time discretization
 
-**3. Market Maker**
+## **Order Flow Generation**
 
-- quotes bid/ask
-- inventory skew
-- spread adjustment
+- Poisson arrival process for market orders
+- Persistent order flow modeling
+- Toxic vs noise trader classification
 
-# **💰 PnL Decomposition**
+## **Market Making Engine**
 
-PnL = Spread PnL
+- Dynamic bid/ask quoting
+- Inventory-skewed reservation pricing
+- Spread widening under elevated toxicity conditions
+- Tick-size discretization
 
-- Adverse Selection
+## **Adverse Selection Modeling**
 
-+ Inventory Exposure
+- Toxic informed traders generate directional price impact
+- Simulated post-trade markouts
+- Spread capture vs adverse selection trade-off analysis
 
-# **📊 Key Insight**
+## **Risk & Performance Tracking**
 
-Even with positive spread capture, the strategy can be unprofitable when inventory risk dominates under volatile or toxic environments.
+- Mark-to-market PnL tracking
+- Inventory exposure monitoring
+- Equity curve visualization
 
-# **🔬 Experiment Results**
+# **🟡Model Structure**
 
-========================== PnL Breakdown ==========================
+## **Price Process**
 
-- Spread PnL: 18.9299
-- Adverse Selection: -2.5179
-- Inventory Exposure: 0.4741
-- Total PnL: 16.8861
+The mid-price evolves according to:
 
-# **🚀 Extensions**
 
-- toxicity estimation
-- optimal quoting (Avellaneda-Stoikov)
-- dynamic spread adjustment
-- risk constraints
+### $dS_t = \mu dt + \sigma \sqrt{dt}\epsilon_t$
+
+
+Where:
+
+- $\mu = drift$
+- $\sigma = volatility$
+- $\epsilon_t \sim N(0,1)$
+
+## **Inventory-Skewed Quoting**
+
+The market maker adjusts reservation prices based on inventory exposure:
+
+
+### $r_t = S_t - \gamma q_t$
+
+
+Where:
+
+- $S_t = current mid-price$
+- $q_t = inventory position$
+- $\gamma = inventory risk aversion coefficient$
+
+This discourages excessive directional inventory accumulation.
+
+## **Dynamic Spread Adjustment**
+
+Quoted spread widens under elevated toxicity conditions:
+
+### $Spread_t = BaseSpread \times (1 + \kappa \hat{\alpha})$
+
+
+Where:
+
+- $\hat{\alpha} = estimated recent order flow toxicity$
+- $\kappa = toxicity sensitivity parameter$
+
+## **Simulation Components**
+
+| **Component** | **Description** |
+| --- | --- |
+| MarketPrice | Simulates stochastic mid-price dynamics |
+| OrderFlow | Generates market order arrivals |
+| MarketMaker | Handles quoting, inventory, and PnL |
+| Simulator | Runs full market interaction loop |
+
+## **Example Simulation Output**
+
+The simulator tracks:
+
+- Mid-price evolution
+- Inventory accumulation
+- Mark-to-market PnL
+- Toxic flow events
+- Spread adjustment behavior
+
+Example observations:
+
+- Elevated toxic flow widens quoted spreads
+- Persistent order flow increases inventory imbalance risk
+- Adverse selection can dominate spread capture under informed flow regimes
+
+## **Technologies Used**
+
+- Python
+- NumPy
+- Matplotlib
+- Dataclasses
+
+## **Future Improvements**
+
+Potential extensions include:
+
+- Multi-level order book simulation
+- Hawkes-process order arrivals
+- Queue position modeling
+- Reinforcement learning inventory control
+- Volatility regime switching
+- Real exchange data calibration
